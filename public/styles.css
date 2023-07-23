@@ -1,0 +1,24 @@
+.main {
+    background-color: #fafffb;
+
+}
+
+.header {
+    /* background-color: red; */
+}
+
+.top-bar {
+    background-color: #e5ffea;
+
+}
+
+.content {
+}
+
+section {
+    background-color: #ffffff;;
+}
+
+.text-lg {
+    font-size: 1.25rem;
+  }

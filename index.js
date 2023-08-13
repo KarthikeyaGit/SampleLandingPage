@@ -3,8 +3,12 @@ const app = express();
 const path = require('path');
 const { exec } = require('child_process');
 const crypto = require('crypto');
+const cors = require('cors');
 
 require('dotenv').config()
+
+app.use(cors());
+
 
 const webhookSecret = process.env.SECRET;
 

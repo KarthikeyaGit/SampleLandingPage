@@ -37,7 +37,6 @@ app.post('/api/webhook-trigger', (req, res) => {
     const commits = req.body.commits;
     console.log('Push event commits:', commits);
     
-    // Execute the deploy shell script
     exec('sh deploy.sh', (error, stdout, stderr) => {
       if (error) {
         console.error(`Error: ${error}`);
@@ -54,7 +53,7 @@ app.post('/api/webhook-trigger', (req, res) => {
 });
 
 app.get('/api/ping', (req, res) => {
-  console.log("Ping",new Date());
+  res.send({"message": `ping success ${new Date()}`})
 })
 
 app.listen(3000, () => {

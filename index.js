@@ -36,6 +36,7 @@ app.use('/api/webhook-trigger', (req, res, next) => {
   next();
 });
 
+
 app.post('/api/webhook-trigger', (req, res) => {
   if (req.headers['x-github-event'] === 'push') {
     const commits = req.body.commits;

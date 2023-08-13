@@ -1,3 +1,6 @@
+
+cd SampleLandingPage
+
 git pull origin main
 
 npm install

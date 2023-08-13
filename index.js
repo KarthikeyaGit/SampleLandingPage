@@ -1,13 +1,56 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const { exec } = require('child_process');
+const crypto = require('crypto');
+
+require('dotenv').config()
+
+const webhookSecret = process.env.SECRET;
+
+app.use(express.json()); 
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  res.sendFile('./index.html');
+app.use('/webhook-trigger', (req, res, next) => {
+  const signature = req.headers['x-hub-signature-256'];
+  
+  if (!signature) {
+    console.log('Unauthorized: Missing signature');
+    return res.status(401).send('Unauthorized: Missing signature');
+  }
 
+  const hmac = crypto.createHmac('sha256', webhookSecret);
+  const expectedSignature = `sha256=${hmac.update(JSON.stringify(req.body)).digest('hex')}`;
+  
+  if (signature !== expectedSignature) {
+    console.log('Unauthorized: Invalid signature');
+    return res.status(401).send('Unauthorized: Invalid signature');
+  }
+
+  console.log('Signature verified: Webhook request accepted');
+  next();
+});
+
+app.post('/webhook-trigger', (req, res) => {
+  if (req.headers['x-github-event'] === 'push') {
+    const commits = req.body.commits;
+    console.log('Push event commits:', commits);
+    
+    // Execute the deploy shell script
+    exec('sh deploy.sh', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error}`);
+        return res.status(500).send('Error during deployment.');
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      
+      res.status(200).send('Webhook event received and deployment started.');
+    });
+  } else {
+    res.status(200).send('Webhook event received.');
+  }
 });
 
 app.listen(3000, () => {

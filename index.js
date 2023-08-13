@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/webhook-trigger', (req, res, next) => {
+app.use('/api/webhook-trigger', (req, res, next) => {
   const signature = req.headers['x-hub-signature-256'];
   
   if (!signature) {
@@ -32,7 +32,7 @@ app.use('/webhook-trigger', (req, res, next) => {
   next();
 });
 
-app.post('/webhook-trigger', (req, res) => {
+app.post('/api/webhook-trigger', (req, res) => {
   if (req.headers['x-github-event'] === 'push') {
     const commits = req.body.commits;
     console.log('Push event commits:', commits);
@@ -52,6 +52,10 @@ app.post('/webhook-trigger', (req, res) => {
     res.status(200).send('Webhook event received.');
   }
 });
+
+app.get('/api/ping', (req, res) => {
+  console.log("Ping",new Date());
+})
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');

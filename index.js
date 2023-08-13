@@ -53,6 +53,7 @@ app.post('/api/webhook-trigger', (req, res) => {
 });
 
 app.get('/api/ping', (req, res) => {
+  console.log({"message": `ping success ${new Date()}`});
   res.send({"message": `ping success ${new Date()}`})
 })
 
